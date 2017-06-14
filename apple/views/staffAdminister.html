@@ -94,7 +94,7 @@
         if($('.sub-header').text() == "information"){
           document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
           document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data ? 1 : 0;
+          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data=="true" ? 1 : 0;
           document.getElementById("age").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
           document.getElementById("experience").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
           document.getElementById("birthday").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;

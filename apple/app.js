@@ -342,9 +342,7 @@ function * deleteProject(){
 }
 
 function * staff(){
-  var collection = db.collection('staff');                           //選擇collection為staff
-  var data = yield collection.find().toArray();
-  this.body = yield render('staff',data[6]);
+  this.body = yield render('staff');
 }
 
 function * staffAdmin(){
@@ -465,7 +463,7 @@ function * adminPay(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*3000 as '薪水' from project as p,process as pr,employee as e where p.projectId = pr.projectId and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
+                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*600 as '薪水' from project as p,process as pr,employee as e where p.projectId = pr.projectId and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];

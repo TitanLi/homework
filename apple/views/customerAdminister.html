@@ -82,7 +82,7 @@
             document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
             document.getElementById("phone").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
             document.getElementById("age").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
-            document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
+            document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data=="false" ? 0:1;
             document.getElementById("address").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
             document.getElementById("introducer").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
             document.getElementById("company").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
@@ -90,7 +90,7 @@
             document.getElementById("submit").value = "修改";
         }
         function checkFunction(){
-          if(document.myForm.name.value=="" || document.myForm.phone.value=="" || document.myForm.age.value=="" || document.myForm.sex.value=="" || document.myForm.address.value=="" || document.myForm.introducer.value=="" || document.myForm.company.value==""){
+          if(document.myForm.name.value=="" || document.myForm.phone.value=="" || document.myForm.age.value=="" || document.myForm.sex.value=="" || document.myForm.address.value=="" || document.myForm.company.value==""){
             alert("所有欄位都必須填寫");
             return false;
           }
