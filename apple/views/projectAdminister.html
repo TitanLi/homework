@@ -61,15 +61,15 @@
                   {% endfor %}
                   <tr>
                     {% for count in title %}
-                      {% if count == "id"%}
+                      {% if count == "projectId"%}
                         {% if router == "/insert/project" %}
-                          <td id="tdId"><input type='text' name='id' id='textId' value={{countId}}></td>
+                          <td id="tdId"><input type='text' name='projectId' id='textId' value={{countId}}></td>
                         {% endif %}
                       {% endif %}
                       {% if count == "數量" %}
                         <td id="td"></td>
                       {% endif %}
-                      {% if count != "數量" && count != "id" && count!="動作"%}
+                      {% if count != "數量" && count != "projectId" && count!="動作"%}
                         <td><input type=text name={{count}} id={{count}} value=""></td>
                       {% endif %}
                     {% endfor %}

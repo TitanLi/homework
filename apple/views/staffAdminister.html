@@ -66,6 +66,8 @@
                         {% if count != "數量" && count!="動作"%}
                           {% if count == "date" %}
                             <td><input type=text name={{count}} id={{count}} value="" placeholder = "dd/mm/yyyy"></td>
+                          {% elseif subject == "list" && count=="name" %}
+                            <td></td>
                           {% else %}
                             <td><input type=text name={{count}} id={{count}} value=""></td>
                           {% endif %}
@@ -92,7 +94,7 @@
         if($('.sub-header').text() == "information"){
           document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
           document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
+          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data ? 1 : 0;
           document.getElementById("age").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
           document.getElementById("experience").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
           document.getElementById("birthday").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
@@ -104,7 +106,6 @@
           document.getElementById("submit").value = "修改";
         }
         if($('.sub-header').text() == "list"){
-          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
           document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
           document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
           document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
@@ -116,25 +117,22 @@
 
       function deleteFunction(a) {
         if($('.sub-header').text() == "information"){
-          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
-          document.getElementById("old").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
-          document.getElementById("birthday").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
+          document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
+          document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data ? 1 : 0;
+          document.getElementById("age").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
+          document.getElementById("experience").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("birthday").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
+          document.getElementById("address").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
+          document.getElementById("phone").value = document.getElementById("myTable").rows[a].cells[8].firstChild.data;
+          document.getElementById("specialty").value = document.getElementById("myTable").rows[a].cells[9].firstChild.data;
+          document.getElementById("company").value = document.getElementById("myTable").rows[a].cells[10].firstChild.data;
           document.getElementById("myForm").action = "/delete/information";
           document.getElementById("submit").value = "刪除";
         }
-        if($('.sub-header').text() == "pay"){
-          document.getElementById("id").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
-          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("month").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
-          document.getElementById("money").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
-          document.getElementById("myForm").action = "/delete/pay";
-          document.getElementById("submit").value = "刪除";
-        }
         if($('.sub-header').text() == "list"){
-          document.getElementById("id").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
-          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("project").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
+          document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
+          document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
           document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
           document.getElementById("hours").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
           document.getElementById("myForm").action = "/delete/list";

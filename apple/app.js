@@ -20,13 +20,6 @@ var config = {
   database: '1410332011'
 }
 
-MongoClient.connect("mongodb://localhost:27017/apple",function(err,pDb){
-  if(err){
-    return console.dir(err);
-  }
-  db = pDb;
-});
-
 app.use(logger());
 app.use(serve('./views'));
 
@@ -65,9 +58,6 @@ app.use(route.post('/insert/information',insertInformation));
 app.use(route.post('/update/information',updateInformation));
 app.use(route.post('/delete/information',deleteInformation));
 app.use(route.post('/search/pay',searchPay));
-app.use(route.post('/insert/pay',insertPay));
-app.use(route.post('/update/pay',updatePay));
-app.use(route.post('/delete/pay',deletePay));
 app.use(route.post('/search/list',searchList));
 app.use(route.post('/insert/list',insertList));
 app.use(route.post('/update/list',updateList));
@@ -92,7 +82,6 @@ function * customerInformation(){
     for(let i=0;i<data.length;i++){
       dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex, "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
     }
-    // console.log(dataArray);
     sql.close();
     this.body = yield render('customer',{subject:"customer",
                                         title:{"t1":"name","t2":"phone","t3":"age","t4":"sex","t5":"address","t6":"introducer","t7":"company"},
@@ -102,15 +91,6 @@ function * customerInformation(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  // }
-  // this.body = yield render('customer',{subject:"customer",
-  //                                     title:{"t1":"id","t2":"name","t3":"sex","t4":"old","t5":"birthday"},
-  //                                     apple:dataArray});
 }
 
 function * customerAdmin(){
@@ -156,20 +136,6 @@ function * customerAdministerList(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().sort({id: 1}).toArray();
-  // var dataArray = [];
-  // count = 1;
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"td" : i+1,"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  //   count = data[i].id+1;
-  // }
-  // this.body = yield render('customerAdminister',{subject:"information",
-  //                                       title:{"t1":"數量","t2":"id","t3":"name","t4":"sex","t5":"old","t6":"birthday","t7":"動作"},
-  //                                       apple:dataArray,
-  //                                       countId:count,
-  //                                       router:"/insert/customer",
-  //                                       value:"新增"});
 }
 
 function * customerSearch(date){
@@ -185,7 +151,6 @@ function * customerSearch(date){
     for(let i=0;i<data.length;i++){
       dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex, "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
     }
-    // console.log(dataArray);
     sql.close();
     this.body = yield render('customer',{subject:"customer",
                                         title:{"t1":"name","t2":"phone","t3":"age","t4":"sex","t5":"address","t6":"introducer","t7":"company"},
@@ -195,17 +160,6 @@ function * customerSearch(date){
     sql.close();
     this.body = 'select fail';
   }
-  // var data1 = yield parse(this);
-  // console.log(data1);
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find({"name":data1.search}).toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  // }
-  // this.body = yield render('customer',{subject:"information",
-  //                                   title:{"t1":"id","t2":"name","t3":"sex","t4":"old","t5":"birthday"},
-  //                                   apple:dataArray});
 }
 
 function * insertCustomer(){
@@ -222,11 +176,6 @@ function * insertCustomer(){
     sql.close();
     this.body = 'insert fail';
   }
-  // var data = yield parse(this);
-  // var insertData = {"id" : count, "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday};
-  // var collection = db.collection('information');
-  // var data = yield collection.insert(insertData);
-  // this.redirect('/customer/administer/list');
 }
 
 function * updateCustomer(){
@@ -243,14 +192,6 @@ function * updateCustomer(){
     sql.close();
     this.body = 'insert fail';
   }
-  // var data = yield parse(this);
-  // console.log(data);
-  // var findData = {"id" : parseInt(data.id)};
-  // var collection = db.collection('information');
-  // var data = yield collection.update(findData,{
-  //                                     '$set':{"id" : parseInt(data.id), "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday}
-  //                                   });
-  // this.redirect('/customer/administer/list');
 }
 
 function * project(){
@@ -266,27 +207,18 @@ function * projectInformation(){
     var data = result.recordset;
     var dataArray = [];
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"id" : data[i].id, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
+      dataArray[i] = {"projectId" : data[i].projectId, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
                       "endTime" : data[i].endTime.toLocaleDateString(), "material" : data[i].material, "name" : data[i].name, "phone" : data[i].phone};
     }
     sql.close();
     this.body = yield render('project',{subject:"information",
-                                        title:{"t1":"id","t2":"startTime","t3":"address","t4":"item","t5":"receipt","t6":"money","t7":"endTime","t8":"material","t9":"name","t10":"phone"},
+                                        title:{"t1":"projectId","t2":"startTime","t3":"address","t4":"item","t5":"receipt","t6":"money","t7":"endTime","t8":"material","t9":"name","t10":"phone"},
                                         apple:dataArray});
   }catch(err){
     console.log(err);
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  // }
-  // this.body = yield render('project',{subject:"information",
-  //                                   title:{"t1":"id","t2":"name","t3":"sex","t4":"old","t5":"birthday"},
-  //                                   apple:dataArray});
 }
 
 function * projectAdmin(){
@@ -311,19 +243,19 @@ function * projectAdministerList(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query('select * from project order by id');
+                      .query('select * from project order by projectId');
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
     count = 1;
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"td" : i+1, "id" : data[i].id, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
+      dataArray[i] = {"td" : i+1, "projectId" : data[i].projectId, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
                       "endTime" : data[i].endTime.toLocaleDateString(), "material" : data[i].material, "name" : data[i].name, "phone" : data[i].phone};
-      count = data[i].id+1;
+      count = data[i].projectId+1;
     }
     sql.close();
     this.body = yield render('projectAdminister',{subject:"project",
-                                                  title:{"t1":"數量","t2":"id","t3":"startTime","t4":"address","t5":"item","t6":"receipt","t7":"money","t8":"endTime","t9":"material","t10":"name","t11":"phone","t12":"動作"},
+                                                  title:{"t1":"數量","t2":"projectId","t3":"startTime","t4":"address","t5":"item","t6":"receipt","t7":"money","t8":"endTime","t9":"material","t10":"name","t11":"phone","t12":"動作"},
                                                   apple:dataArray,
                                                   countId:count,
                                                   router:"/insert/project",
@@ -333,20 +265,6 @@ function * projectAdministerList(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().sort({id: 1}).toArray();
-  // var dataArray = [];
-  // count = 1;
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"td" : i+1,"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  //   count = data[i].id+1;
-  // }
-  // this.body = yield render('projectAdminister',{subject:"information",
-  //                                       title:{"t1":"數量","t2":"id","t3":"name","t4":"sex","t5":"old","t6":"birthday","t7":"動作"},
-  //                                       apple:dataArray,
-  //                                       countId:count,
-  //                                       router:"/insert/project",
-  //                                       value:"新增"});
 }
 
 function * projectSearch(date){
@@ -360,29 +278,18 @@ function * projectSearch(date){
     var data = result.recordset;
     var dataArray = [];
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"id" : data[i].id, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
+      dataArray[i] = {"projectId" : data[i].projectId, "startTime" : data[i].startTime.toLocaleDateString(), "address" : data[i].address, "item" : data[i].item, "receipt" : data[i].receipt.toLocaleDateString(), "money" : data[i].money,
                       "endTime" : data[i].endTime.toLocaleDateString(), "material" : data[i].material, "name" : data[i].name, "phone" : data[i].phone};
     }
     sql.close();
     this.body = yield render('project',{subject:"information",
-                                        title:{"t1":"id","t2":"startTime","t3":"address","t4":"item","t5":"receipt","t6":"money","t7":"endTime","t8":"material","t9":"name","t10":"phone"},
+                                        title:{"t1":"projectId","t2":"startTime","t3":"address","t4":"item","t5":"receipt","t6":"money","t7":"endTime","t8":"material","t9":"name","t10":"phone"},
                                         apple:dataArray});
   }catch(err){
     console.log(err);
     sql.close();
     this.body = 'select fail';
   }
-  // var data1 = yield parse(this);
-  // console.log(data1);
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find({"name":data1.search}).toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  // }
-  // this.body = yield render('project',{subject:"information",
-  //                                   title:{"t1":"id","t2":"name","t3":"sex","t4":"old","t5":"birthday"},
-  //                                   apple:dataArray});
 }
 
 function * insertProject(){
@@ -391,7 +298,7 @@ function * insertProject(){
     console.log(data);
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("insert into project values ("+data.id+",'"+data.startTime+"','"+data.address+"','"+data.item+"','"+data.receipt+"',"+data.money+",'"+data.endTime+"',"+data.material+",'"+data.name+"','"+data.phone+"')");
+                      .query("insert into project values ("+data.projectId+",'"+data.startTime+"','"+data.address+"','"+data.item+"','"+data.receipt+"',"+data.money+",'"+data.endTime+"',"+data.material+",'"+data.name+"','"+data.phone+"')");
     console.dir(result);
     sql.close();
     this.redirect('/project/administer/list');
@@ -400,20 +307,14 @@ function * insertProject(){
     sql.close();
     this.body = 'insert fail';
   }
-  // var data = yield parse(this);
-  // var insertData = {"id" : count, "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday};
-  // var collection = db.collection('information');
-  // var data = yield collection.insert(insertData);
-  // this.redirect('/project/administer/list');
 }
 
 function * updateProject(){
   try {
     var data = yield parse(this);
-    // console.log(data);
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("update project set startTime='"+data.startTime+"',address='"+data.address+"',item='"+data.item+"',receipt='"+data.receipt+"',money="+parseInt(data.money)+",endTime='"+data.endTime+"',material="+parseInt(data.material)+",name='"+data.name+"',phone='"+data.phone+"' where id="+parseInt(data.id));
+                      .query("update project set startTime='"+data.startTime+"',address='"+data.address+"',item='"+data.item+"',receipt='"+data.receipt+"',money="+parseInt(data.money)+",endTime='"+data.endTime+"',material="+parseInt(data.material)+",name='"+data.name+"',phone='"+data.phone+"' where projectId="+parseInt(data.projectId));
     console.dir(result);
     sql.close();
     this.redirect('/project/administer/list');
@@ -422,23 +323,14 @@ function * updateProject(){
     sql.close();
     this.body = 'update fail';
   }
-  // var data = yield parse(this);
-  // console.log(data);
-  // var findData = {"id" : parseInt(data.id)};
-  // var collection = db.collection('information');
-  // var data = yield collection.update(findData,{
-  //                                     '$set':{"id" : parseInt(data.id), "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday}
-  //                                   });
-  // this.redirect('/project/administer/list');
 }
 
 function * deleteProject(){
   try {
     var data = yield parse(this);
-    // console.log(data);
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("delete from project where id = " + data.id);
+                      .query("delete from project where projectId = " + data.projectId);
     console.dir(result);
     sql.close();
     this.redirect('/project/administer/list');
@@ -447,11 +339,6 @@ function * deleteProject(){
     sql.close();
     this.body = 'delete fail';
   }
-  // var data = yield parse(this);
-  // console.log(data);
-  // var collection = db.collection('information');
-  // var data = yield collection.remove({"id" : parseInt(data.id), "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday});
-  // this.redirect('/project/administer/list');
 }
 
 function * staff(){
@@ -495,22 +382,13 @@ function * information(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  // }
-  // this.body = yield render('staff',{subject:"information",
-  //                                   title:{"t1":"id","t2":"name","t3":"sex","t4":"old","t5":"birthday"},
-  //                                   apple:dataArray});
 }
 
 function * pay(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*3000 as '薪水' from project as p,process as pr,employee as e where p.id = pr.id and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
+                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*3000 as '薪水' from project as p,process as pr,employee as e where p.projectId = pr.projectId and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
@@ -526,22 +404,13 @@ function * pay(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('pay');                           //選擇collection為pay
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "month" : data[i].month, "money" : data[i].money};
-  // }
-  // this.body = yield render('staff',{subject:"pay",
-  //                                   title:{"t1":"id","t2":"name","t3":"month","t4":"money"},
-  //                                   apple:dataArray});
 }
 
 function * list(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("select e.name,e.idCard,p.id as projectId,pr.date,pr.hours from project as p ,employee as e ,process as pr where p.id = pr.id and e.idCard = pr.idCard");
+                      .query("select e.name,e.idCard,p.projectId,pr.date,pr.hours from project as p ,employee as e ,process as pr where p.projectId = pr.projectId and e.idCard = pr.idCard");
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
@@ -557,15 +426,6 @@ function * list(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('list');                           //選擇collection為list
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"id" : data[i].id, "name" : data[i].name, "project" : data[i].project, "date" : data[i].date, "hours" : data[i].hours};
-  // }
-  // this.body = yield render('staff',{subject:"list",
-  //                                   title:{"t1":"id","t2":"name","t3":"project","t4":"date","t5":"hours"},
-  //                                   apple:dataArray});
 }
 
 
@@ -599,27 +459,13 @@ function * adminInformation(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('information');                           //選擇collection為information
-  // var data = yield collection.find().sort({id: 1}).toArray();
-  // var dataArray = [];
-  // count = 1;
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"td" : i+1,"id" : data[i].id, "name" : data[i].name, "sex" : data[i].sex, "old" : data[i].old, "birthday" : data[i].birthday};
-  //   count = data[i].id+1;
-  // }
-  // this.body = yield render('staffAdminister',{subject:"information",
-  //                                       title:{"t1":"數量","t2":"id","t3":"name","t4":"sex","t5":"old","t6":"birthday","t7":"動作"},
-  //                                       apple:dataArray,
-  //                                       countId:count,
-  //                                       router:"/insert/information",
-  //                                       value:"新增"});
 }
 
 function * adminPay(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*3000 as '薪水' from project as p,process as pr,employee as e where p.id = pr.id and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
+                      .query("select e.name ,e.idCard ,MONTH(pr.date) as '月份',SUM(pr.hours) as '時數',SUM(pr.hours)*3000 as '薪水' from project as p,process as pr,employee as e where p.projectId = pr.projectId and pr.idCard = e.idCard group by e.name,e.idCard,MONTH(pr.date)");
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
@@ -632,35 +478,19 @@ function * adminPay(){
     this.body = yield render('staffAdminister',{subject:"pay",
                                         title:{"t1":"數量","t2":"name","t3":"idCard","t4":"月份","t5":"時數","t6":"薪水"},
                                         apple:dataArray,
-                                        countId:count,
-                                        router:"/insert/pay",
-                                        value:"新增"});
+                                        countId:count});
   }catch(err){
     console.log(err);
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('pay');                           //選擇collection為pay
-  // var data = yield collection.find().sort({id: 1}).toArray();
-  // var dataArray = [];
-  // count = 1;
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"td" : i+1,"id" : data[i].id, "name" : data[i].name, "month" : data[i].month, "money" : data[i].money};
-  //   count = data[i].id+1;
-  // }
-  // this.body = yield render('staffAdminister',{subject:"pay",
-  //                                        title:{"t1":"數量","t2":"id","t3":"name","t4":"month","t5":"money","t6":"動作"},
-  //                                        apple:dataArray,
-  //                                        countId:count,
-  //                                        router:"/insert/pay",
-  //                                        value:"新增"});
 }
 
 function * adminList(){
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("select e.name,e.idCard,p.id as projectId,pr.date,pr.hours from project as p ,employee as e ,process as pr where p.id = pr.id and e.idCard = pr.idCard");
+                      .query("select e.name,e.idCard,p.projectId,pr.date,pr.hours from project as p ,employee as e ,process as pr where p.projectId = pr.projectId and e.idCard = pr.idCard");
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
@@ -681,20 +511,6 @@ function * adminList(){
     sql.close();
     this.body = 'select fail';
   }
-  // var collection = db.collection('list');                           //選擇collection為list
-  // var data = yield collection.find().toArray();
-  // var dataArray = [];
-  // count = 1;
-  // for(let i=0;i<data.length;i++){
-  //   dataArray[i] = {"td" : i+1,"id" : data[i].id, "name" : data[i].name, "project" : data[i].project, "date" : data[i].date, "hours" : data[i].hours};
-  //   count = data[i].id+1;
-  // }
-  // this.body = yield render('staffAdminister',{subject:"list",
-  //                                        title:{"t1":"數量","t2":"id","t3":"name","t4":"project","t5":"date","t6":"hours","t7":"動作"},
-  //                                        apple:dataArray,
-  //                                        countId:count,
-  //                                        router:"/insert/list",
-  //                                        value:"新增"});
 }
 
 function * searchInformation(date){
@@ -727,30 +543,38 @@ function * insertInformation(){
     sql.close();
     this.body = 'insert fail';
   }
-  // var data = yield parse(this);
-  // var insertData = {"id" : count, "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday};
-  // var collection = db.collection('information');
-  // var data = yield collection.insert(insertData);
-  // this.redirect('/administer/information');
 }
 
 function * updateInformation(){
-  var data = yield parse(this);
-  console.log(data);
-  var findData = {"id" : parseInt(data.id)};
-  var collection = db.collection('information');
-  var data = yield collection.update(findData,{
-                                      '$set':{"id" : parseInt(data.id), "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday}
-                                    });
-  this.redirect('/administer/information');
+  try {
+    var data = yield parse(this);
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("update employee set name='"+data.name+"',sex="+data.sex+",age="+data.age+",experience="+data.experience+",birthday='"+data.birthday+"',address='"+data.address+"',phone='"+data.phone+"',specialty='"+data.specialty+"',company='"+data.company+"' where idCard='"+data.idCard+"'");
+    console.dir(result);
+    sql.close();
+    this.redirect('/administer/information');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'update fail';
+  }
 }
 
 function * deleteInformation(){
-  var data = yield parse(this);
-  console.log(data);
-  var collection = db.collection('information');
-  var data = yield collection.remove({"id" : parseInt(data.id), "name" : data.name, "sex" : data.sex, "old" : data.old, "birthday" : data.birthday});
-  this.redirect('/administer/information');
+  try {
+    var data = yield parse(this);
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("delete from employee where idCard = '" + data.idCard + "'");
+    console.dir(result);
+    sql.close();
+    this.redirect('/administer/information');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'delete fail';
+  }
 }
 
 function * searchPay(date){
@@ -765,33 +589,6 @@ function * searchPay(date){
   this.body = yield render('staff',{subject:"pay",
                                     title:{"t1":"id","t2":"name","t3":"month","t4":"money"},
                                     apple:dataArray});
-}
-
-function * insertPay(){
-  var data = yield parse(this);
-  var insertData = {"id" : parseInt(data.id), "name" : data.name, "month" : data.month, "money" : data.money};
-  var collection = db.collection('pay');
-  var data = yield collection.insert(insertData);
-  this.redirect('/administer/pay');
-}
-
-function * updatePay(){
-  var data = yield parse(this);
-  console.log(data);
-  var findData = {"id" : parseInt(data.id)};
-  var collection = db.collection('pay');
-  var data = yield collection.update(findData,{
-                                      '$set':{"id" : parseInt(data.id), "name" : data.name, "month" : data.month, "money" : data.money}
-                                    });
-  this.redirect('/administer/pay');
-}
-
-function * deletePay(){
-  var data = yield parse(this);
-  console.log(data);
-  var collection = db.collection('pay');
-  var data = yield collection.remove({"id" : parseInt(data.id), "name" : data.name, "month" : data.month, "money" : data.money});
-  this.redirect('/administer/pay');
 }
 
 function * searchList(date){
@@ -809,30 +606,52 @@ function * searchList(date){
 }
 
 function * insertList(){
-  var data = yield parse(this);
-  var insertData = {"id" : parseInt(data.id), "name" : data.name, "project" : data.project, "date" : data.date, "hours" : data.hours};
-  var collection = db.collection('list');
-  var data = yield collection.insert(insertData);
-  this.redirect('/administer/list');
+  try {
+    var data = yield parse(this);
+    console.log(data);
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("insert into process values ('"+data.idCard+"',"+data.projectId+",'"+data.date+"',"+data.hours+")");
+    console.dir(result);
+    sql.close();
+    this.redirect('/administer/list');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'insert fail';
+  }
 }
 
 function * updateList(){
-  var data = yield parse(this);
-  console.log(data);
-  var findData = {"id" : parseInt(data.id)};
-  var collection = db.collection('list');
-  var data = yield collection.update(findData,{
-                                      '$set':{"id" : parseInt(data.id), "name" : data.name, "project" : data.project, "date" : data.date, "hours" : data.hours}
-                                    });
-  this.redirect('/administer/list');
+  try {
+    var data = yield parse(this);
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("update process set projectId="+data.projectId+",date='"+data.date+"',hours="+data.hours+" where idCard='"+data.idCard+"'");
+    console.dir(result);
+    sql.close();
+    this.redirect('/administer/list');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'update fail';
+  }
 }
 
 function * deleteList(){
-  var data = yield parse(this);
-  console.log(data);
-  var collection = db.collection('list');
-  var data = yield collection.remove({"id" : parseInt(data.id), "name" : data.name, "project" : data.project, "date" : data.date, "hours" : data.hours});
-  this.redirect('/administer/list');
+  try {
+    var data = yield parse(this);
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("delete from process where idCard='" + data.idCard + "' and projectId="+data.projectId+" and date='"+data.date+"' and hours="+data.hours);
+    console.dir(result);
+    sql.close();
+    this.redirect('/administer/list');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'delete fail';
+  }
 }
 
 app.listen(3000);
