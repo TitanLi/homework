@@ -103,7 +103,7 @@ function * customerInformation(){
     var data = result.recordset;
     var dataArray = [];
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex, "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
+      dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex==true?"男":"女", "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
     }
     sql.close();
     this.body = yield render('customer',{subject:"customer",
@@ -144,7 +144,7 @@ function * customerAdministerList(){
     var dataArray = [];
     count = 1;
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"td" : i+1, "name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex, "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
+      dataArray[i] = {"td" : i+1, "name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex==true?"男":"女", "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
       count = data[i].id+1;
     }
     sql.close();
@@ -172,7 +172,7 @@ function * customerSearch(date){
     var data = result.recordset;
     var dataArray = [];
     for(let i=0;i<data.length;i++){
-      dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex, "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
+      dataArray[i] = {"name" : data[i].name, "phone" : data[i].phone, "age" : data[i].age, "sex" : data[i].sex==true?"男":"女", "address" : data[i].address, "introducer" : data[i].introducer, "company" : data[i].company};
     }
     sql.close();
     this.body = yield render('customer',{subject:"customer",
@@ -188,9 +188,16 @@ function * customerSearch(date){
 function * insertCustomer(){
   try {
     var data = yield parse(this);
+    var sex;
+    if(data.sex =="男"){
+        sex = 1;
+    }
+    else if (data.sex =="女") {
+        sex = 0;
+    }
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("insert into customer values ('"+data.name+"','"+data.phone+"',"+data.age+","+data.sex+",'"+data.address+"','"+data.introducer+"','"+data.company+"')");
+                      .query("insert into customer values ('"+data.name+"','"+data.phone+"',"+data.age+","+ sex +",'"+data.address+"','"+data.introducer+"','"+data.company+"')");
     console.dir(result);
     sql.close();
     this.redirect('/customer/administer/list');
@@ -204,9 +211,16 @@ function * insertCustomer(){
 function * updateCustomer(){
   try {
     var data = yield parse(this);
+    var sex;
+    if(data.sex =="男"){
+        sex = 1;
+    }
+    else if (data.sex =="女") {
+        sex = 0;
+    }
     var pool = yield sql.connect(config);
     var result = yield pool.request()
-                      .query("update customer set age="+data.age+",sex="+data.sex+",address='"+data.address+"',introducer='"+data.introducer+"',company='"+data.company+"' where name='"+data.name+"' and phone='"+data.phone+"'");
+                      .query("update customer set age="+data.age+",sex="+sex+",address='"+data.address+"',introducer='"+data.introducer+"',company='"+data.company+"' where name='"+data.name+"' and phone='"+data.phone+"'");
     console.dir(result);
     sql.close();
     this.redirect('/customer/administer/list');
@@ -268,7 +282,7 @@ function * projectAdministerList(){
     var result = yield pool.request()
                       .query('select * from project order by projectId');
     var name = yield pool.request()
-                        .query('select name from customer');
+                        .query('select DISTINCT name from customer');
     console.log(name.recordset);
     console.dir(result.recordset);
     var data = result.recordset;

@@ -65,7 +65,7 @@
                         {% endif %}
                         {% if count != "數量" && count!="動作"%}
                           {% if count == "date" %}
-                            <td><input type=text name={{count}} id={{count}} value="" placeholder = "dd/mm/yyyy"></td>
+                            <td><input type=text name={{count}} id={{count}} value="" placeholder = "mm/dd/yyyy"></td>
                           {% elseif subject == "list" && count=="name" %}
                             <td></td>
                           {% else %}
@@ -149,7 +149,7 @@
       }
 
       function insertText () {
-        document.getElementById("birthday").placeholder = "dd/mm/yyyy";
+        document.getElementById("birthday").placeholder = "mm/dd/yyyy";
         // document.getElementById('tdId').innerHTML = document.getElementById("myTable").rows.length - 1;
       }
     </script>
