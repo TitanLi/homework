@@ -3,23 +3,43 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>index</title>
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/picture/apple1.jpg">
 
     <title>apple工程行</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
     <link href="/css/customer.css" rel="stylesheet">
     <script src="/assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script>
+      function ajaxFunction(){
+      $.ajax({
+        type:"POST",
+        url:"check",
+        dataType:"text",
+        data:{
+          ID:document.getElementById("name").value
+        },
+        success: function (data) {
+          var htmlMsg = "<select name='phone'>";
+          var phone = JSON.parse(data);
+          for(index in phone){
+            htmlMsg = htmlMsg + " <option value="+phone[index]+">"+phone[index]+"</option>";
+          }
+          htmlMsg = htmlMsg + " </select>"
+          $('#Msg').html(htmlMsg);
+        },
+        error:function(data){
+          $('#Msg').html("<input type='text' name='phone' id='phone' value='error'></input>")
+          return false;
+        }
+      });
+    }
+    </script>
   </head>
   <body onload="insertText();">
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -69,7 +89,19 @@
                       {% if count == "數量" %}
                         <td id="td"></td>
                       {% endif %}
-                      {% if count != "數量" && count != "projectId" && count!="動作"%}
+                      {% if count == "name" %}
+                        <td>
+                          <select name="name" id="name" onclick="ajaxFunction()">
+                            {% for data in name %}
+        　                     <option value={{data.name}}>{{data.name}}</option>
+                            {% endfor %}
+                          </select>
+                        </td>
+                      {% endif %}
+                      {% if count == "phone" %}
+                        <td id="Msg"></td>
+                      {% endif %}
+                      {% if count!="數量" && count!="projectId" && count!="name" && count!="phone" && count!="動作"%}
                         <td><input type=text name={{count}} id={{count}} value=""></td>
                       {% endif %}
                     {% endfor %}
@@ -94,7 +126,8 @@
             document.getElementById("endTime").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
             document.getElementById("material").value = document.getElementById("myTable").rows[a].cells[8].firstChild.data;
             document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[9].firstChild.data;
-            document.getElementById("phone").value = document.getElementById("myTable").rows[a].cells[10].firstChild.data;
+            var phone = document.getElementById("myTable").rows[a].cells[10].firstChild.data;
+            document.getElementById("Msg").innerHTML = "<select name='phone' id='phone'><option value="+phone+">"+phone+"</option></select>";
             document.getElementById("myForm").action = "/update/project";
             document.getElementById("submit").value = "修改";
         }
@@ -109,12 +142,14 @@
             document.getElementById("endTime").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
             document.getElementById("material").value = document.getElementById("myTable").rows[a].cells[8].firstChild.data;
             document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[9].firstChild.data;
-            document.getElementById("phone").value = document.getElementById("myTable").rows[a].cells[10].firstChild.data;
+            var phone = document.getElementById("myTable").rows[a].cells[10].firstChild.data;
+            document.getElementById("Msg").innerHTML = "<select name='phone' id='phone'><option value="+phone+">"+phone+"</option></select>";
             document.getElementById("myForm").action = "/delete/project";
             document.getElementById("submit").value = "刪除";
         }
         function checkFunction(){
-          if(document.myForm.name.value=="" || document.myForm.sex.value=="" || document.myForm.old.value=="" || document.myForm.birthday.value=="" || document.myForm.textId.value==""){
+          if(document.myForm.textId.value=="" || document.myForm.startTime.value=="" || document.myForm.address.value=="" || document.myForm.item.value=="" || document.myForm.receipt.value=="" || document.myForm.money.value=="" || document.myForm.endTime.value==""
+              || document.myForm.material.value==""|| document.myForm.name.value==""|| document.myForm.material.phone==""){
             alert("所有欄位都必須填寫");
             return false;
           }

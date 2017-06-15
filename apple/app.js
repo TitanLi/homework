@@ -52,6 +52,7 @@ app.use(route.post('/project/admin',projectAdminData));
 app.use(route.post('/insert/project',insertProject));
 app.use(route.post('/update/project',updateProject));
 app.use(route.post('/delete/project',deleteProject));
+app.use(route.post('/project/administer/check',checkData));
 app.use(route.post('/admin',adminData));
 app.use(route.post('/search/information',searchInformation));
 app.use(route.post('/insert/information',insertInformation));
@@ -62,6 +63,28 @@ app.use(route.post('/search/list',searchList));
 app.use(route.post('/insert/list',insertList));
 app.use(route.post('/update/list',updateList));
 app.use(route.post('/delete/list',deleteList));
+
+function * checkData(){
+  var dataSearch = yield parse(this);
+  console.log(dataSearch);
+  try {
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("select phone from customer where name='"+dataSearch.ID+"'");
+    var data = result.recordset;
+    sql.close();
+    var dataArray = [];
+    for(let i=0;i<data.length;i++){
+      dataArray[i] = data[i].phone;
+    }
+    console.log(dataArray);
+    this.body = dataArray;
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
+}
 
 function * index(){
   this.body = yield render('index');
@@ -244,6 +267,9 @@ function * projectAdministerList(){
     var pool = yield sql.connect(config);
     var result = yield pool.request()
                       .query('select * from project order by projectId');
+    var name = yield pool.request()
+                        .query('select name from customer');
+    console.log(name.recordset);
     console.dir(result.recordset);
     var data = result.recordset;
     var dataArray = [];
@@ -258,6 +284,7 @@ function * projectAdministerList(){
                                                   title:{"t1":"數量","t2":"projectId","t3":"startTime","t4":"address","t5":"item","t6":"receipt","t7":"money","t8":"endTime","t9":"material","t10":"name","t11":"phone","t12":"動作"},
                                                   apple:dataArray,
                                                   countId:count,
+                                                  name : name.recordset,
                                                   router:"/insert/project",
                                                   value:"新增"});
   }catch(err){
