@@ -12,6 +12,76 @@
     <link href="/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="/css/staff.css" rel="stylesheet">
     <script src="/assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script>
+      function employeeFunction(){
+      $.ajax({
+        type:"POST",
+        url:"employeeCheck",
+        dataType:"text",
+        data:{
+          ID:document.getElementById("name").value
+        },
+        success: function (data) {
+          var htmlMsg = "<select name='idCard'>";
+          var idCard = JSON.parse(data);
+          for(index in idCard){
+            htmlMsg = htmlMsg + " <option value="+idCard[index]+">"+idCard[index]+"</option>";
+          }
+          htmlMsg = htmlMsg + " </select>"
+          $('#employee').html(htmlMsg);
+        },
+        error:function(data){
+          $('#employee').html("<input type='text' name='phone' id='phone' value='error'></input>")
+          return false;
+        }
+      });
+    }
+
+    function customerFunction(){
+      $.ajax({
+        type:"POST",
+        url:"customerCheck",
+        dataType:"text",
+        data:{
+          ID:document.getElementById("customer").value
+        },
+        success: function (data) {
+          var htmlMsg = "<select name='item' id='item' onclick='getProjectId()'>";
+          var item = JSON.parse(data);
+          for(index in item){
+            htmlMsg = htmlMsg + " <option value="+item[index]+">"+item[index]+"</option>";
+          }
+          htmlMsg = htmlMsg + " </select>"
+          $('#itemTable').html(htmlMsg);
+        },
+        error:function(data){
+          $('#itemTable').html("<input type='text' name='phone' id='phone' value='error'></input>")
+          return false;
+        }
+      });
+    }
+
+    function getProjectId(){
+      $.ajax({
+        type:"POST",
+        url:"getProjectId",
+        dataType:"text",
+        data:{
+          customer:document.getElementById("customer").value,
+          item:document.getElementById("item").value
+        },
+        success: function (data) {
+          console.log(data);
+          $('#projectId').val(data);
+        },
+        error:function(data){
+          $('#project').html("<input type='text' name='phone' id='phone' value='error'></input>")
+          return false;
+        }
+      });
+    }
+    </script>
   </head>
 
   <body onload="insertText();">
@@ -37,11 +107,11 @@
           <h1 class="sub-header" id="title">{{subject}}</h1>
           <div class="table-responsive">
             <form action={{ router }} method="post" id="myForm" name="myForm" onsubmit="return checkFunction()">
-              <table class="table table-striped" id="myTable">
+              <table  class="table table-striped" id="myTable">
                 <thead>
                   <tr>
                     {% for titleItem in title %}
-                      <th>{{ titleItem }}</th>
+                      <th><label style="width:100px;">{{ titleItem }}</label></th>
                     {% endfor %}
                   </tr>
                 </thead>
@@ -52,8 +122,10 @@
                       <td>{{ item }}</td>
                     {% endfor %}
                     {% if subject == "information" || subject == "list" %}
-                      <td><input type="button" value="更新" onclick="updateFunction('{{a.td}}')"></td>
-                      <td><input type="button" value="刪除" onclick="deleteFunction('{{a.td}}')"></td>
+                      <td>
+                        <input type="button" value="更新" onclick="updateFunction('{{a.td}}')">
+                        <input type="button" value="刪除" onclick="deleteFunction('{{a.td}}')">
+                      </td>
                     {% endif %}
                   </tr>
                   {% endfor %}
@@ -63,11 +135,31 @@
                         {% if count == "數量" %}
                           <td id="tdId">{{countId}}</td>
                         {% endif %}
-                        {% if count != "數量" && count!="動作"%}
-                          {% if count == "date" %}
+                        {% if count != "數量" && count!="動作" %}
+                          {% if count == "date" || count == "birthday" %}
                             <td><input type=text name={{count}} id={{count}} value="" placeholder = "mm/dd/yyyy"></td>
                           {% elseif subject == "list" && count=="name" %}
-                            <td></td>
+                            <td>
+                              <select name="name" id="name" onclick="employeeFunction()">
+                                {% for data in name %}
+            　                     <option value={{data.name}}>{{data.name}}</option>
+                                {% endfor %}
+                              </select>
+                            </td>
+                          {% elseif subject == "list" && count=="idCard" %}
+                            <td id="employee"></td>
+                          {% elseif subject == "list" && count=="顧客姓名" %}
+                            <td>
+                              <select name="customer" id="customer" onclick="customerFunction()">
+                                {% for data in customer %}
+            　                     <option value={{data.name}}>{{data.name}}</option>
+                                {% endfor %}
+                              </select>
+                            </td>
+                          {% elseif subject == "list" && count=="工程名稱" %}
+                            <td id="itemTable"></td>
+                          {% elseif subject == "list" && count=="projectId" %}
+                            <td id="projectTable"><input type='text' name='projectId' id='projectId'></td>
                           {% else %}
                             <td><input type=text name={{count}} id={{count}} value=""></td>
                           {% endif %}
@@ -106,10 +198,18 @@
           document.getElementById("submit").value = "修改";
         }
         if($('.sub-header').text() == "list"){
+          document.getElementById("employee").innerHTML = "<input type='text' name='idCard' id='idCard' disabled='true'><input type='hidden' name='idCardData' id='idCardData'>";
+          document.getElementById("itemTable").innerHTML = "<input type='text' name='item' id='item' disabled='true'>";
+          document.getElementById("projectTable").innerHTML = "<input type='text' name='projectId' id='projectId' disabled='true'><input type='hidden' name='projectIdData' id='projectIdData'>";
+          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
           document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
-          document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
-          document.getElementById("hours").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("customer").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
+          document.getElementById("item").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
+          document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
+          document.getElementById("hours").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
+          document.getElementById("idCardData").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
+          document.getElementById("projectIdData").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
           document.getElementById("myForm").action = "/update/list";
           document.getElementById("submit").value = "修改";
         }
@@ -131,10 +231,18 @@
           document.getElementById("submit").value = "刪除";
         }
         if($('.sub-header').text() == "list"){
+          document.getElementById("employee").innerHTML = "<input type='text' name='idCard' id='idCard' disabled='true'><input type='hidden' name='idCardData' id='idCardData'>";
+          document.getElementById("itemTable").innerHTML = "<input type='text' name='item' id='item' disabled='true'>";
+          document.getElementById("projectTable").innerHTML = "<input type='text' name='projectId' id='projectId' disabled='true'><input type='hidden' name='projectIdData' id='projectIdData'>";
+          document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
           document.getElementById("idCard").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
-          document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
-          document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
-          document.getElementById("hours").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("customer").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
+          document.getElementById("item").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
+          document.getElementById("projectId").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+          document.getElementById("date").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
+          document.getElementById("hours").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
+          document.getElementById("idCardData").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
+          document.getElementById("projectIdData").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
           document.getElementById("myForm").action = "/delete/list";
           document.getElementById("submit").value = "刪除";
         }
@@ -149,7 +257,7 @@
       }
 
       function insertText () {
-        document.getElementById("birthday").placeholder = "mm/dd/yyyy";
+        // document.getElementById("birthday").placeholder = "mm/dd/yyyy";
         // document.getElementById('tdId').innerHTML = document.getElementById("myTable").rows.length - 1;
       }
     </script>

@@ -4,26 +4,44 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/picture/apple1.jpg">
 
     <title>apple工程行</title>
-
-    <!-- Bootstrap core CSS -->
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="/css/staff.css" rel="stylesheet">
     <script src="/assets/js/ie-emulation-modes-warning.js"></script>
+    <script>
+      function projectFunction(){
+        $.ajax({
+          type:"POST",
+          url:"join",
+          dataType:"text",
+          data:{
+            ID:document.getElementById("project").value
+          },
+          success: function (data) {
+            var htmlMsg = "<table class='table table-striped'><thead><tr><th>name</th><th>idCard</th><th>projectId</th><th>date</th><th>hours</th></tr></thead><tbody>";
+            var value = JSON.parse(data);
+            for(index in value){
+              htmlMsg = htmlMsg + " <tr><td>"+value[index].name+"</td><td>"+value[index].idCard+"</td><td>"+value[index].projectId+"</td><td>"+value[index].date+"</td><td>"+value[index].hours+"</td></tr>";
+            }
+            htmlMsg = htmlMsg + "</tbody></table>"
+            $('#count').html("<h1>參與人數："+value.length+"</h1>");
+            $('#projectJoin').html(htmlMsg);
+          },
+          error:function(data){
+            $('#projectJoin').html("<input type='text' name='phone' id='phone' value='error'></input>")
+            return false;
+          }
+        });
+      }
+    </script>
   </head>
 
-  <body onload="insertText();">
-
+  <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -47,60 +65,28 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="/staff/admin">管理 <span class="sr-only">(current)</span></a></li>
-            <li><a href="/staff/information">全體員工資訊</a></li>
-            <li><a href="/staff/pay">全體員工薪水</a></li>
-            <li><a href="/staff/list">全體員工工作明細</a></li>
+            <li><a href="/project/join">查詢某工程員工參與人數</a></li>
+            <li><a href="/factory/income">計算工廠某月收入</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="sub-header">{{subject}}</h1>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  {% for titleItem in title %}
-                    <th>{{ titleItem }}</th>
-                  {% endfor %}
-                </tr>
-              </thead>
-              <tbody>
-                {% for a in apple %}
-                <tr>
-                  {% for item in a%}
-                    <td>{{ item }}</td>
-                  {% endfor %}
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+          {% if subject == "查詢某工程員工參與人數" %}
+          <select name="project" id="project" onclick="projectFunction()">
+              {% for data in select %}
+                <option value={{data}}>{{data}}</option>
+              {% endfor %}
+          </select>
+          <div id="count"></div>
+          <div id="projectJoin"></div>
+          {% endif %}
         </div>
       </div>
     </div>
-    <script type="text/javascript">
-      // document.getElementById("tId").text = document.getElementById("myTable").rows.length;
-      function insertText(a) {
-        if($('.sub-header').text() == "information"){
-          document.getElementById("search").action = "/search/information";
-        }
-        if($('.sub-header').text() == "pay"){
-          document.getElementById("search").action = "/search/pay";
-        }
-        if($('.sub-header').text() == "list"){
-          document.getElementById("search").action = "/search/list";
-        }
-      }
-    </script>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="/dist/js/bootstrap.min.js"></script>
-    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/assets/js/vendor/holder.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
