@@ -46,10 +46,13 @@ app.use(route.get('/administer/list',adminList));
 app.use(route.get('/advanced',advanced));
 app.use(route.get('/project/join',projectJoin));
 app.use(route.get('/factory/income',factoryIncome));
+app.use(route.get('/factory/admin',factoryAdmin));
+app.use(route.get('/factory/information',factoryInformation));
 app.use(route.post('/customer',customerSearch));
 app.use(route.post('/customer/admin',customerAdminData));
 app.use(route.post('/insert/customer',insertCustomer));
 app.use(route.post('/update/customer',updateCustomer));
+app.use(route.post('/delete/customer',deleteCustomer));
 app.use(route.post('/project',projectSearch));
 app.use(route.post('/project/admin',projectAdminData));
 app.use(route.post('/insert/project',insertProject));
@@ -70,6 +73,9 @@ app.use(route.post('/administer/employeeCheck',employeeData));
 app.use(route.post('/administer/customerCheck',customerData));
 app.use(route.post('/administer/getProjectId',getProjectId));
 app.use(route.post('/project/join',getProjectJoin));
+app.use(route.post('/factory/income',getFactoryIncome));
+app.use(route.post('/factory/admin',factoryAdminData));
+app.use(route.post('/factory/update/information',updataFactoryInformation));
 
 function * checkData(){
   var dataSearch = yield parse(this);
@@ -156,7 +162,25 @@ function * getProjectId(){
 }
 
 function * index(){
-  this.body = yield render('index');
+  console.log(123);
+  try {
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query('select * from company');
+    console.dir(result.recordset);
+    var data = result.recordset;
+    console.log(data);
+    sql.close();
+    this.body = yield render('indexView',{license:data[0].license,
+                                      phone:data[0].phone,
+                                      address:data[0].address,
+                                      time:data[0].time
+                                     });
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
 }
 
 function * customer(){
@@ -296,7 +320,30 @@ function * updateCustomer(){
   }catch(err){
     console.log(err);
     sql.close();
-    this.body = 'insert fail';
+    this.body = 'update fail';
+  }
+}
+
+function * deleteCustomer(){
+  try {
+    var data = yield parse(this);
+    var sex;
+    if(data.sex =="男"){
+        sex = 1;
+    }
+    else if (data.sex =="女") {
+        sex = 0;
+    }
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("delete from customer where name='"+data.name+"' and phone='"+data.phone+"' and age="+data.age+" and sex="+sex+" and address='"+data.address+"' and introducer='"+data.introducer+"' and company='"+data.company+"'");
+    console.dir(result);
+    sql.close();
+    this.redirect('/customer/administer/list');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'delete fail';
   }
 }
 
@@ -887,9 +934,96 @@ function * getProjectJoin(){
 }
 
 function * factoryIncome(){
-  this.body = yield render('advanced',{
-                                        subject:"計算工廠某月收入"
-                                      });
+  try {
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("select YEAR(receipt) as year,MONTH(receipt) as month,SUM(money) as money from project group by YEAR(receipt),MONTH(receipt)");
+    console.dir(result.recordset);
+    var data = result.recordset;
+    sql.close();
+    this.body = yield render('advanced',{
+                                          subject:"計算工廠某月收入",
+                                          title:["year","month","money"],
+                                          list:data
+                                        });
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
+}
+
+function * getFactoryIncome(){
+  try {
+    var dataSearch = yield parse(this);
+    dataSearch = dataSearch.search.split("/");
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("select YEAR(receipt) as year,MONTH(receipt) as month,SUM(money) as money from project where YEAR(receipt)="+dataSearch[0] + " and MONTH(receipt)=" + dataSearch[1] +" group by YEAR(receipt),MONTH(receipt)");
+    console.dir(result.recordset);
+    var data = result.recordset;
+    sql.close();
+    this.body = yield render('advanced',{
+                                          subject:"計算工廠某月收入",
+                                          title:["year","month","money"],
+                                          list:data
+                                        });
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
+}
+
+function * factoryAdmin(){
+  this.body = yield render('advancedAdmin');
+}
+
+function * factoryAdminData(){
+  var data = yield parse(this);
+  if(data.account == 'root' && data.password == 'apple'){
+    message='';
+    this.redirect('/factory/information');
+  }else{
+    this.redirect('/factory/admin');
+  }
+}
+
+function * factoryInformation(){
+  try {
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("select * from company");
+    console.dir(result.recordset);
+    var data = result.recordset;
+    sql.close();
+    this.body = yield render('advanced',{
+                                          subject:"工廠資訊管理",
+                                          list:{license:data[0].license,phone:data[0].phone,address:data[0].address,time:data[0].time}
+                                        });
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
+}
+
+function * updataFactoryInformation(){
+  try {
+    var data = yield parse(this);
+    console.log(data);
+    console.log("update company set phone="+data.phone+",address='"+data.address+"',time='"+data.time+"' where license='"+696698886+"'");
+    var pool = yield sql.connect(config);
+    var result = yield pool.request()
+                      .query("update company set phone="+data.phone+",address='"+data.address+"',time='"+data.time+"' where license='"+696698886+"'");
+    console.dir(result.recordset);
+    sql.close();
+    this.redirect('/factory/information');
+  }catch(err){
+    console.log(err);
+    sql.close();
+    this.body = 'select fail';
+  }
 }
 
 app.listen(3000);

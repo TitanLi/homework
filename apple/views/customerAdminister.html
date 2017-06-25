@@ -3,21 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>index</title>
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/picture/apple1.jpg">
-
-    <title>apple工程行</title>
-
-    <!-- Bootstrap core CSS -->
+    <title>汶富工程行</title>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="/css/customer.css" rel="stylesheet">
     <script src="/assets/js/ie-emulation-modes-warning.js"></script>
   </head>
@@ -45,7 +35,7 @@
                 <thead>
                   <tr>
                     {% for titleItem in title %}
-                      <th>{{ titleItem }}</th>
+                      <th><label style="width:100px;">{{ titleItem }}</label></th>
                     {% endfor %}
                   </tr>
                 </thead>
@@ -55,7 +45,10 @@
                     {% for item in a%}
                       <td>{{ item }}</td>
                     {% endfor %}
-                    <td><input type="button" value="更新" onclick="updateFunction('{{a.td}}')"></td>
+                    <td>
+                      <input type="button" value="更新" onclick="updateFunction('{{a.td}}')">
+                      <input type="button" value="刪除" onclick="deleteFunction('{{a.td}}')">
+                    </td>
                   </tr>
                   {% endfor %}
                   <tr>
@@ -88,6 +81,17 @@
             document.getElementById("company").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
             document.getElementById("myForm").action = "/update/customer";
             document.getElementById("submit").value = "修改";
+        }
+        function deleteFunction(a) {
+            document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
+            document.getElementById("phone").value = document.getElementById("myTable").rows[a].cells[2].firstChild.data;
+            document.getElementById("age").value = document.getElementById("myTable").rows[a].cells[3].firstChild.data;
+            document.getElementById("sex").value = document.getElementById("myTable").rows[a].cells[4].firstChild.data;
+            document.getElementById("address").value = document.getElementById("myTable").rows[a].cells[5].firstChild.data;
+            document.getElementById("introducer").value = document.getElementById("myTable").rows[a].cells[6].firstChild.data;
+            document.getElementById("company").value = document.getElementById("myTable").rows[a].cells[7].firstChild.data;
+            document.getElementById("myForm").action = "/delete/customer";
+            document.getElementById("submit").value = "刪除";
         }
         function checkFunction(){
           if(document.myForm.name.value=="" || document.myForm.phone.value=="" || document.myForm.age.value=="" || document.myForm.sex.value=="" || document.myForm.address.value=="" || document.myForm.company.value==""){

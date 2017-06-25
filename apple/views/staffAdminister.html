@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/picture/apple1.jpg">
-    <title>apple工程行</title>
+    <title>汶富工程行</title>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="/css/staff.css" rel="stylesheet">
@@ -84,7 +84,7 @@
     </script>
   </head>
 
-  <body onload="insertText();">
+  <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -181,7 +181,6 @@
     </div>
 
     <script type="text/javascript">
-      // document.getElementById("tId").text = document.getElementById("myTable").rows.length;
       function updateFunction(a) {
         if($('.sub-header').text() == "information"){
           document.getElementById("name").value = document.getElementById("myTable").rows[a].cells[1].firstChild.data;
@@ -254,11 +253,6 @@
           return false;
         }
         return true;
-      }
-
-      function insertText () {
-        // document.getElementById("birthday").placeholder = "mm/dd/yyyy";
-        // document.getElementById('tdId').innerHTML = document.getElementById("myTable").rows.length - 1;
       }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
