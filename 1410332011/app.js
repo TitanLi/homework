@@ -162,7 +162,6 @@ function * getProjectId(){
 }
 
 function * index(){
-  console.log(123);
   try {
     var pool = yield sql.connect(config);
     var result = yield pool.request()
