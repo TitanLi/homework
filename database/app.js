@@ -6,6 +6,7 @@ var parse = require('co-body');
 var MongoClient = require('mongodb').MongoClient;
 var sql = require('mssql');
 var render = require('./lib/render');
+var user = require('./passwrod');
 
 var app = koa();
 
@@ -13,11 +14,11 @@ var db;
 var count;
 
 var config = {
-  user:'1410332011',
-  password:'Apple0706',
-  server:'163.17.136.91',
-  port:1433,
-  database: '1410332011'
+  user:user.user,
+  password:user.password,
+  server:user.ip,
+  port:user.port,
+  database: user.database
 }
 
 app.use(logger());
